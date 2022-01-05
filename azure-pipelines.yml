@@ -18,7 +18,12 @@ steps:
     packageType: 'sdk'
     version: '6.0.x'
     includePreviewVersions: true
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     configuration: $(buildConfiguration)
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
