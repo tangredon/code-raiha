@@ -49,3 +49,5 @@ steps:
       terraformVersion: 'latest'
 
   - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
+
+  - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2)
