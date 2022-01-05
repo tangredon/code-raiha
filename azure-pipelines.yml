@@ -4,7 +4,13 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- mainline
+  - development
+  - release/mainline
+  - release/*
+
+pr:
+  - development
+  - release/mainline
 
 pool:
   vmImage: ubuntu-latest
@@ -13,17 +19,27 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.x'
-    includePreviewVersions: true
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.7.0'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    configuration: $(buildConfiguration)
+  - task: gitversion/execute@0
+    displayName: Execute GitVersion
+    inputs:
+      updateAssemblyInfo: true
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+      includePreviewVersions: true
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      configuration: $(buildConfiguration)
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
