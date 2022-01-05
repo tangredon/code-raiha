@@ -48,4 +48,4 @@ steps:
     inputs:
       terraformVersion: 'latest'
 
-  - script: cd terraform && terraform init
+  - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
