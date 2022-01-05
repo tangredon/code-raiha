@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EnableDefaultContentItems>False</EnableDefaultContentItems>
@@ -23,6 +23,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Raiha.Web\Raiha.Web.csproj" />
+    <ProjectReference Include="..\Raiha\Raiha.csproj" />
   </ItemGroup>
 </Project>

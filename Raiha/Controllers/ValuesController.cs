@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Raiha.Web.Controllers;
+namespace Raiha.Controllers;
 
 [Route("api/[controller]")]
 public class ValuesController : ControllerBase
@@ -10,7 +11,12 @@ public class ValuesController : ControllerBase
     [HttpGet]
     public IEnumerable<string> Get()
     {
-        return new string[] { "value1", "value2" };
+        if (Random.Shared.NextDouble() > 0.75)
+        {
+            throw new Exception("bad luck");
+        }
+
+        return new[] { "value 11" };
     }
 
     // GET api/values/5
