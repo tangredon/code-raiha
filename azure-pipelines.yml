@@ -53,7 +53,7 @@ steps:
   - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
     displayName: Terraform Init
 
-  - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2)
+  - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -target="aws_ecr_repository.ecr_raiha"
     displayName: Terraform Plan
 
   - task: Docker@2
