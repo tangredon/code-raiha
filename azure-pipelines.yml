@@ -48,6 +48,14 @@ steps:
     inputs:
       terraformVersion: 'latest'
 
+  - powershell: dotnet tool update -g Amazon.Lambda.Tools
+
   - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
 
-  - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2)
+  # - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2)
+
+  - task: Docker@2
+    inputs:
+      command: 'build'
+      Dockerfile: 'Raiha.Web/Dockerfile'
+      buildContext: '**'
