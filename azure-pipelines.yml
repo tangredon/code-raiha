@@ -8,7 +8,11 @@ pr:
   - release/mainline
 
 variables:
-  buildConfiguration: 'Release'
+  - group: cloud-kv
+  - name: buildConfiguration
+    value: 'Release'
+  - name: DOCKER_REPOSITORY
+    value: $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com/raiha
 
 stages:
 - stage: Initialize
@@ -81,6 +85,13 @@ stages:
             command: 'build'
             Dockerfile: 'Raiha.Web/Dockerfile'
             buildContext: '**'
+
+        - script: |
+            aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+          displayName: 'Login to AWS'
+          env:
+            AWS_ACCESS_KEY_ID: $(AWS-ACCESS-KEY-ID)
+            AWS_SECRET_ACCESS_KEY: $(AWS-SECRET-ACCESS-KEY)
 
   # - powershell: dotnet tool update -g Amazon.Lambda.Tools
   #   displayName: Install Amazon Lambda Tools
