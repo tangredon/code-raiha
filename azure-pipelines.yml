@@ -7,61 +7,80 @@ pr:
   - development
   - release/mainline
 
-pool:
-  vmImage: ubuntu-latest
-
 variables:
   buildConfiguration: 'Release'
 
-steps:
-  - task: gitversion/setup@0
-    displayName: Install GitVersion
-    inputs:
-      versionSpec: '5.7.0'
+stages:
+- stage: Initialize
+  pool:
+    vmImage: ubuntu-latest
+  jobs: 
+    - job: GitVersion
+      steps:
+        - task: gitversion/setup@0
+          displayName: Install GitVersion
+          inputs:
+            versionSpec: '5.7.0'
 
-  - task: gitversion/execute@0
-    displayName: Execute GitVersion
-    inputs:
-      updateAssemblyInfo: true
+        - task: gitversion/execute@0
+          displayName: Execute GitVersion
+          inputs:
+            updateAssemblyInfo: true
 
-  - task: TerraformInstaller@0
-    displayName: Install Terraform
-    inputs:
-      terraformVersion: 'latest'
+- stage: Infrastructure
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Terraform
+      steps:
+        - task: TerraformInstaller@0
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
 
-  - task: UseDotNet@2
-    displayName: Use NET6.0
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
-      includePreviewVersions: true
+        - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
+          displayName: Terraform Init
 
-  - task: DotNetCoreCLI@2
-    displayName: Build
-    inputs:
-      command: 'build'
-      configuration: $(buildConfiguration)
+        - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -target="aws_ecr_repository.ecr_raiha" -out "plan.terra"
+          displayName: Terraform Plan
+      
+        - powershell: cd terraform && terraform apply "plan.terra"
+          displayName: Terraform Apply
 
-  - task: DotNetCoreCLI@2
-    displayName: Test
-    inputs:
-      command: 'test'
+- stage: Build
+  condition: succeeded()
+  dependsOn:
+    - Initialize
+    - Infrastructure
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Build
+      steps:
+        - task: UseDotNet@2
+          displayName: Use NET6.0
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+            includePreviewVersions: true
 
-  - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
-    displayName: Terraform Init
+        - task: DotNetCoreCLI@2
+          displayName: Build
+          inputs:
+            command: 'build'
+            configuration: $(buildConfiguration)
 
-  - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -target="aws_ecr_repository.ecr_raiha" -out "plan.terra"
-    displayName: Terraform Plan
+        - task: DotNetCoreCLI@2
+          displayName: Test
+          inputs:
+            command: 'test'
 
-  - task: Docker@2
-    displayName: Build Docker Image
-    inputs:
-      command: 'build'
-      Dockerfile: 'Raiha.Web/Dockerfile'
-      buildContext: '**'
+        - task: Docker@2
+          displayName: Build Docker Image
+          inputs:
+            command: 'build'
+            Dockerfile: 'Raiha.Web/Dockerfile'
+            buildContext: '**'
 
-  - powershell: cd terraform && terraform apply "plan.terra"
-    displayName: Terraform Apply
-
-  - powershell: dotnet tool update -g Amazon.Lambda.Tools
-    displayName: Install Amazon Lambda Tools
+  # - powershell: dotnet tool update -g Amazon.Lambda.Tools
+  #   displayName: Install Amazon Lambda Tools
