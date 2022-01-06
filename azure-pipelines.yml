@@ -16,6 +16,7 @@ variables:
 
 stages:
 - stage: Initialize
+  dependsOn: []
   pool:
     vmImage: ubuntu-latest
   jobs: 
@@ -32,6 +33,7 @@ stages:
             updateAssemblyInfo: true
 
 - stage: Infrastructure
+  dependsOn: []
   pool:
     vmImage: ubuntu-latest
   jobs:
@@ -86,7 +88,7 @@ stages:
             Dockerfile: 'Raiha.Web/Dockerfile'
             buildContext: '**'
 
-        - script: |
+        - powershell: |
             aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com
           displayName: 'Login to AWS'
           env:
