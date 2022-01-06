@@ -84,16 +84,27 @@ stages:
         - task: Docker@2
           displayName: Build Docker Image
           inputs:
+            repository: $(DOCKER_REPOSITORY)
             command: 'build'
             Dockerfile: 'Raiha.Web/Dockerfile'
             buildContext: '**'
+            tags: |
+              $(Build.BuildNumber)
 
         - powershell: |
             aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com
-          displayName: 'Login to AWS'
+          displayName: Docker Login
           env:
             AWS_ACCESS_KEY_ID: $(AWS-ACCESS-KEY-ID)
             AWS_SECRET_ACCESS_KEY: $(AWS-SECRET-ACCESS-KEY)
+
+        - task: Docker@2
+          displayName: Push Docker Image
+          inputs:
+            repository: $(DOCKER_REPOSITORY)
+            command: 'push'
+            tags: |
+              $(Build.BuildNumber)
 
   # - powershell: dotnet tool update -g Amazon.Lambda.Tools
   #   displayName: Install Amazon Lambda Tools
