@@ -128,7 +128,3 @@ stages:
       
         - powershell: cd terraform && terraform apply "plan.terra"
           displayName: Terraform Apply
-        
-
-  # - powershell: dotnet tool update -g Amazon.Lambda.Tools
-  #   displayName: Install Amazon Lambda Tools
