@@ -5,11 +5,13 @@
     "dotnet lambda help",
     "All the command line options for the Lambda command can be specified in this file."
   ],
-  "profile": "",
-  "region": "",
+  "profile": "dev",
+  "region": "eu-central-1",
   "configuration": "Release",
   "s3-prefix": "Raiha.Web/",
   "template": "serverless.template",
   "template-parameters": "",
-  "docker-host-build-output-dir": "./bin/Release/lambda-publish"
+  "docker-host-build-output-dir": "./bin/Release/lambda-publish",
+  "package-type": "image",
+  "image-tag": "raiha:0.1.0-unstable.22"
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Raiha.Web.Controllers;
+namespace Raiha.Controllers;
 
 [Route("api/[controller]")]
 public class ValuesController : ControllerBase

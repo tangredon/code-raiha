@@ -5,13 +5,13 @@
   "Parameters": {},
   "Conditions": {},
   "Resources": {
-    "AspNetCoreFunction": {
+    "Main": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "PackageType": "Image",
         "ImageConfig": {
           "Command": [
-            "Raiha.Web::Raiha.Web.LambdaEntryPoint::FunctionHandlerAsync"
+            "Raiha::Raiha.LambdaEntryPoint::FunctionHandlerAsync"
           ]
         },
         "ImageUri": "",

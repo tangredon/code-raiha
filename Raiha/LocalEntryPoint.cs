@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Raiha.Web;
+namespace Raiha;
 
 /// <summary>
 /// The Main function can be used to run the ASP.NET Core application locally using the Kestrel web server.
