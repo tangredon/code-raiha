@@ -136,7 +136,20 @@ resource "aws_api_gateway_deployment" "lambda" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.lambda.id
-  stage_name  = var.stage_name
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "lambda" {
+  depends_on = [
+    aws_api_gateway_deployment.lambda
+  ]
+
+  deployment_id = aws_api_gateway_deployment.lambda.id
+  rest_api_id   = aws_api_gateway_rest_api.lambda.id
+  stage_name    = var.stage_name
 }
 
 resource "aws_lambda_permission" "apigateway" {
@@ -163,7 +176,7 @@ data "aws_api_gateway_domain_name" "raiha" {
 
 resource "aws_api_gateway_base_path_mapping" "raiha" {
   depends_on = [
-    aws_api_gateway_deployment.lambda
+    aws_api_gateway_stage.lambda
   ]
 
   api_id      = aws_api_gateway_rest_api.lambda.id
