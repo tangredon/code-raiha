@@ -85,6 +85,8 @@ resource "aws_lambda_function" "main" {
 
   tags = {
     environment = var.stage_name
+    application = local.prefix
+    rvi         = "${local.prefix}::${var.image_tag}"
     version     = var.image_tag
   }
 }
