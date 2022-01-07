@@ -18,3 +18,4 @@ RUN dotnet publish "Raiha.csproj" \
 
 FROM base AS final
 COPY --from=publish /app/publish ${LAMBDA_TASK_ROOT}
+CMD ["Raiha::Raiha.LambdaEntryPoint::FunctionHandlerAsync"]
