@@ -86,7 +86,7 @@ stages:
           inputs:
             repository: $(DOCKER_REPOSITORY)
             command: 'build'
-            Dockerfile: 'Raiha.Web/Dockerfile'
+            Dockerfile: 'Raiha/Dockerfile'
             buildContext: '**'
             tags: |
               $(Build.BuildNumber)
