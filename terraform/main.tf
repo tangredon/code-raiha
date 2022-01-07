@@ -68,7 +68,7 @@ data "aws_ecr_image" "image" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name              = "/aws/lambda/${local.prefix}-lambda"
+  name              = "/aws/lambda/${local.prefix}-lambda-${var.stage_name}"
   retention_in_days = 7
 }
 
@@ -77,7 +77,7 @@ resource "aws_lambda_function" "main" {
       aws_cloudwatch_log_group.lambda_logs
   ]
 
-  function_name = "${local.prefix}-lambda"
+  function_name = "${local.prefix}-lambda-${var.stage-name}"
   role = aws_iam_role.lambda.arn
   timeout = 5
   image_uri = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.id}"
