@@ -106,5 +106,29 @@ stages:
             tags: |
               $(Build.BuildNumber)
 
+- stage: Deploy
+  condition: succeeded()
+  dependsOn:
+    - Build
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Terraform
+      steps:
+        - task: TerraformInstaller@0
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
+
+        - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
+          displayName: Terraform Init
+
+        - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -var "image_tag=$(Build.BuildNumber)" -out "plan.terra"
+          displayName: Terraform Plan
+      
+        - powershell: cd terraform && terraform apply "plan.terra"
+          displayName: Terraform Apply
+        
+
   # - powershell: dotnet tool update -g Amazon.Lambda.Tools
   #   displayName: Install Amazon Lambda Tools
