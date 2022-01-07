@@ -26,7 +26,7 @@ locals {
 variable "aws_access" {}
 variable "aws_secret" {}
 
-variable "stage_name" {default = "test"}
+variable "stage_name" {}
 variable "image_tag" {}
 
 provider "aws" {
@@ -82,6 +82,11 @@ resource "aws_lambda_function" "main" {
   timeout = 5
   image_uri = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.id}"
   package_type = "Image"
+
+  tags = {
+    environment = var.stage_name
+    version     = var.image_tag
+  }
 }
 
 resource "aws_api_gateway_rest_api" "lambda" {
