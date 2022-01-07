@@ -160,13 +160,17 @@ resource "aws_api_gateway_stage" "lambda" {
 }
 
 resource "aws_lambda_permission" "apigateway" {
+  depends_on = [
+    aws_api_gateway_stage.lambda
+  ]
+
     statement_id  = "AllowAPIGatewayInvoke"
     action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.main.arn
+    function_name = aws_lambda_function.main.function_name
     principal     = "apigateway.amazonaws.com"
 
     # The /*/* portion grants access from any method on any resource within the API Gateway "REST API".
-    source_arn = "${replace(aws_api_gateway_deployment.lambda.execution_arn, var.stage_name, "")}*/*"
+    source_arn = "${aws_api_gateway_rest_api.lambda.execution_arn}/*/*/*"
 }
 
 resource "aws_lambda_permission" "cloudwatch" {
