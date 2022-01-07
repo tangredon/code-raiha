@@ -162,6 +162,10 @@ data "aws_api_gateway_domain_name" "raiha" {
 }
 
 resource "aws_api_gateway_base_path_mapping" "raiha" {
+  depends_on = [
+    aws_api_gateway_deployment.lambda
+  ]
+
   api_id      = aws_api_gateway_rest_api.lambda.id
   stage_name  = var.stage_name
   domain_name = data.aws_api_gateway_domain_name.raiha.domain_name
