@@ -10,7 +10,7 @@ public class ValuesController : ControllerBase
     [HttpGet]
     public IEnumerable<string> Get()
     {
-        return new[] { "value1", "value2", "value3" };
+        return new[] { "value10", "value20", "value30" };
     }
 
     // GET api/values/5
