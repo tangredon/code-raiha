@@ -93,6 +93,19 @@ resource "aws_lambda_function" "main" {
   }
 }
 
+resource "aws_lambda_alias" "lambda" {
+  name             = "prod"
+  description      = "a sample description"
+  function_name    = aws_lambda_function.main.arn
+  function_version = aws_lambda_function.main.version - 1
+
+  routing_config {
+    additional_version_weights = {
+      "${aws_lambda_function.main.version}" = 0.0
+    }
+  }
+}
+
 resource "aws_api_gateway_rest_api" "lambda" {
   name        = "raiha-api"
   description = "Terraform Serverless Application Example"
@@ -118,7 +131,7 @@ resource "aws_api_gateway_integration" "lambda" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.main.invoke_arn
+  uri                     = aws_lambda_alias.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_method" "proxy_root" {
@@ -135,7 +148,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.main.invoke_arn
+  uri                     = aws_lambda_alias.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "lambda" {
