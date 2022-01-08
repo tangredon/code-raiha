@@ -94,14 +94,21 @@ resource "aws_lambda_function" "main" {
 }
 
 resource "aws_lambda_alias" "lambda" {
+  depends_on = [
+    aws_lambda_function.main
+  ]
+
   name             = "prod"
   description      = "a sample description"
   function_name    = aws_lambda_function.main.arn
-  function_version = aws_lambda_function.main.version - 1
+  function_version = aws_lambda_function.main.version
 
-  routing_config {
-    additional_version_weights = {
-      "${aws_lambda_function.main.version}" = 0.0
+  dynamic "routing_config" {
+    for_each = []
+    content {
+      additional_version_weights = {
+        aws_lambda_function.main.version = 0.0 
+      }
     }
   }
 }
@@ -181,7 +188,8 @@ resource "aws_lambda_permission" "apigateway" {
 
     statement_id  = "AllowAPIGatewayInvoke"
     action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.main.function_name
+    function_name = aws_lambda_function.main.arn
+    qualifier     = aws_lambda_alias.lambda.name
     principal     = "apigateway.amazonaws.com"
 
     # The /*/* portion grants access from any method on any resource within the API Gateway "REST API".
@@ -192,6 +200,7 @@ resource "aws_lambda_permission" "cloudwatch" {
   statement_id  = "AllowCloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.main.arn
+  qualifier     = aws_lambda_alias.lambda.name
   principal     = "logs.eu-central-1.amazonaws.com"
   source_arn    = "${aws_cloudwatch_log_group.lambda_logs.arn}:*"
 }
