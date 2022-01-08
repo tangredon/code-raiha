@@ -205,7 +205,7 @@ resource "aws_lambda_permission" "cloudwatch" {
   source_arn    = "${aws_cloudwatch_log_group.lambda_logs.arn}:*"
 }
 
-data "aws_api_gateway_domain_name" "raiha" {
+data "aws_api_gateway_domain_name" "serverless" {
   domain_name = "serverless.tangredon.com"
 }
 
@@ -216,6 +216,6 @@ resource "aws_api_gateway_base_path_mapping" "raiha" {
 
   api_id      = aws_api_gateway_rest_api.lambda.id
   stage_name  = var.stage_name
-  domain_name = data.aws_api_gateway_domain_name.raiha.domain_name
+  domain_name = data.aws_api_gateway_domain_name.serverless.domain_name
   base_path   = "${local.prefix}_"
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Raiha.Controllers;
@@ -10,6 +11,11 @@ public class ValuesController : ControllerBase
     [HttpGet]
     public IEnumerable<string> Get()
     {
+        if (Random.Shared.NextDouble() > 0.8)
+        {
+            throw new Exception("bad luck");
+        }
+
         return new[] { "value5" };
     }
 
