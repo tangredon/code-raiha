@@ -83,6 +83,8 @@ resource "aws_lambda_function" "main" {
   image_uri = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.id}"
   package_type = "Image"
 
+  publish = true
+
   tags = {
     environment = var.stage_name
     application = local.prefix
