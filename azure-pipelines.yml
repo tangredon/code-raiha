@@ -1,11 +1,16 @@
 trigger:
-  - development
-  - release/mainline
-  - release/*
+  branches:
+    include:
+      - development
+      - release/mainline
+      - release/*
 
 pr:
-  - development
-  - release/mainline
+  autoCancel: 'true'
+  branches:
+    include:
+      - development
+      - release/mainline
 
 variables:
   - group: cloud-kv
