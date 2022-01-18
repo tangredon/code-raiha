@@ -23,7 +23,7 @@ variables:
       value: 'production'
     ${{ if and(startsWith( variables['Build.SourceBranch'], 'refs/heads/release/' ), ne( variables['Build.SourceBranch'], 'refs/heads/release/mainline' ) ) }}:
       value: 'staging'
-    ${{ if ne( variables['Build.SourceBranch'], 'refs/heads/release/mainline' ) }}: 
+    ${{ if eq( variables['Build.SourceBranch'], 'refs/heads/development' ) }}:
       value: 'development'
 
 stages:
