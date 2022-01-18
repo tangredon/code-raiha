@@ -1,0 +1,59 @@
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_BUILDID ?? WeightedPreReleaseNumber}'
+mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
+branches:
+  feature:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    regex: ^features?[/-]
+    tracks-release-branches: false
+    is-release-branch: false
+    source-branches:
+    - develop
+    - feature
+  mainline:
+    mode: ContinuousDeployment
+    tag: ''
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^release\/mainline$
+    source-branches:
+    - develop
+    tracks-release-branches: true
+    is-release-branch: true
+  release:
+    mode: ContinuousDeployment
+    tag: rc
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    source-branches:
+    - develop
+    track-merge-target: false
+    regex: ^release\/(?!mainline)
+    tracks-release-branches: false
+    is-release-branch: true
+    pre-release-weight: 1000
+  develop:
+    mode: ContinuousDeployment
+    tag: unstable
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    is-source-branch-for:
+    - mainline
+    - release
+    - feature
+    track-merge-target: true
+    regex: ^dev(elop)?(ment)?$
+    tracks-release-branches: true
+    is-release-branch: false
+ignore:
+  sha: []
+merge-message-formats:
+  github: '^Merge pull request #(?<PullRequestNumber>\d+) from (?:\w+\/)(?<SourceBranch>.+)'
+  # github: '^Merge pull request #(?<PullRequestNumber>\d+) from (?<SourceBranch>.+)$'
+  # tfs: '^Merged (?:PR (?<PullRequestNumber>\d+)): (M|m)erge (?<SourceBranch>.+) (in)?to (?<TargetBranch>.+)'
