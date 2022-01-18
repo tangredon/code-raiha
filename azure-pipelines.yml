@@ -117,7 +117,7 @@ stages:
               $(Build.BuildNumber)
 
 - stage: Deploy
-  condition: succeeded()
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Build
   pool:
