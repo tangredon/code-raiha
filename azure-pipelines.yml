@@ -126,6 +126,9 @@ stages:
           inputs:
             terraformVersion: 'latest'
 
+        - powershell: echo $(Build.SourceBranchName)
+          displayName: Print Source Branch
+
         - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
           displayName: Terraform Init
 
