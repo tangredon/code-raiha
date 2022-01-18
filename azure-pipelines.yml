@@ -19,9 +19,11 @@ variables:
   - name: DOCKER_REPOSITORY
     value: $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com/raiha
   - name: stage_name
-    ${{ if eq( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+    ${{ if eq( variables['Build.SourceBranch'], 'refs/heads/release/mainline' ) }}: 
       value: 'production'
-    ${{ if ne( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+    ${{ if and(startsWith( variables['Build.SourceBranch'], 'refs/heads/release/' ), ne( variables['Build.SourceBranch'], 'refs/heads/release/mainline' ) ) }}:
+      value: 'staging'
+    ${{ if ne( variables['Build.SourceBranch'], 'refs/heads/release/mainline' ) }}: 
       value: 'development'
 
 stages:
