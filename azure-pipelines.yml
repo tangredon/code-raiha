@@ -13,10 +13,10 @@ variables:
     value: 'Release'
   - name: DOCKER_REPOSITORY
     value: $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com/raiha
-  ${{ if eq( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+  - ${{ if eq( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
     - name: stage_name
       value: production
-  ${{ if ne( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+  - ${{ if ne( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
     - name: stage_name
       value: development
 
