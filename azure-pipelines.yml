@@ -1,0 +1,136 @@
+trigger:
+  - development
+  - release/mainline
+  - release/*
+
+pr:
+  - development
+  - release/mainline
+
+variables:
+  - group: cloud-kv
+  - name: buildConfiguration
+    value: 'Release'
+  - name: DOCKER_REPOSITORY
+    value: $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com/raiha
+  - ${{ if eq( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+    - name: stage_name
+      value: production
+  - ${{ if ne( variables['Build.SourceBranchName'], 'release/mainline' ) }}: 
+    - name: stage_name
+      value: development
+
+stages:
+- stage: Initialize
+  dependsOn: []
+  pool:
+    vmImage: ubuntu-latest
+  jobs: 
+    - job: GitVersion
+      steps:
+        - task: gitversion/setup@0
+          displayName: Install GitVersion
+          inputs:
+            versionSpec: '5.7.0'
+
+        - task: gitversion/execute@0
+          displayName: Execute GitVersion
+          inputs:
+            updateAssemblyInfo: true
+
+- stage: Infrastructure
+  dependsOn: []
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Terraform
+      steps:
+        - task: TerraformInstaller@0
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
+
+        - powershell: cd terraform\registry && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
+          displayName: Terraform Init
+
+        - powershell: cd terraform\registry && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -out "plan.terra"
+          displayName: Terraform Plan
+      
+        - powershell: cd terraform\registry && terraform apply "plan.terra"
+          displayName: Terraform Apply
+
+- stage: Build
+  condition: succeeded()
+  dependsOn:
+    - Initialize
+    - Infrastructure
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Build
+      steps:
+        - task: UseDotNet@2
+          displayName: Use NET6.0
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+            includePreviewVersions: true
+
+        - task: DotNetCoreCLI@2
+          displayName: Build
+          inputs:
+            command: 'build'
+            configuration: $(buildConfiguration)
+
+        - task: DotNetCoreCLI@2
+          displayName: Test
+          inputs:
+            command: 'test'
+
+        - task: Docker@2
+          displayName: Build Docker Image
+          inputs:
+            repository: $(DOCKER_REPOSITORY)
+            command: 'build'
+            Dockerfile: 'Raiha/Dockerfile'
+            buildContext: '**'
+            tags: |
+              $(Build.BuildNumber)
+
+        - powershell: |
+            aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS-ACCOUNT-ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+          displayName: Docker Login
+          env:
+            AWS_ACCESS_KEY_ID: $(AWS-ACCESS-KEY-ID)
+            AWS_SECRET_ACCESS_KEY: $(AWS-SECRET-ACCESS-KEY)
+
+        - task: Docker@2
+          displayName: Push Docker Image
+          inputs:
+            repository: $(DOCKER_REPOSITORY)
+            command: 'push'
+            tags: |
+              $(Build.BuildNumber)
+
+- stage: Deploy
+  condition: succeeded()
+  dependsOn:
+    - Build
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+    - job: Terraform
+      steps:
+        - task: TerraformInstaller@0
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: 'latest'
+
+        - powershell: cd terraform && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
+          displayName: Terraform Init
+
+        - powershell: cd terraform && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -var "image_tag=$(Build.BuildNumber)" -var "stage_name=$(stage_name)" -out "plan.terra"
+          displayName: Terraform Plan
+      
+        - powershell: cd terraform && terraform apply "plan.terra"
+          displayName: Terraform Apply

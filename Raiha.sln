@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Raiha.Web", "Raiha.Web\Raiha.Web.csproj", "{5EDA50A1-95E8-4EE9-AD5D-235D98092644}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Raiha.Web.Tests", "Raiha.Web.Tests\Raiha.Web.Tests.csproj", "{24162D03-446B-47D8-B151-6B974DC33FAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Raiha", "Raiha\Raiha.csproj", "{34DE7625-9503-4AB4-8B86-1F40F17A8DC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5EDA50A1-95E8-4EE9-AD5D-235D98092644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EDA50A1-95E8-4EE9-AD5D-235D98092644}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EDA50A1-95E8-4EE9-AD5D-235D98092644}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EDA50A1-95E8-4EE9-AD5D-235D98092644}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24162D03-446B-47D8-B151-6B974DC33FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24162D03-446B-47D8-B151-6B974DC33FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24162D03-446B-47D8-B151-6B974DC33FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24162D03-446B-47D8-B151-6B974DC33FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34DE7625-9503-4AB4-8B86-1F40F17A8DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34DE7625-9503-4AB4-8B86-1F40F17A8DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34DE7625-9503-4AB4-8B86-1F40F17A8DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34DE7625-9503-4AB4-8B86-1F40F17A8DC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
