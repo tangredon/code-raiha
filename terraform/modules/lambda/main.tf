@@ -1,3 +1,7 @@
+data "aws_iam_role" "lambda" {
+    name = "${var.service_name}-lambda-role"
+}
+
 data "aws_ecr_repository" "repo" {
   name = var.repo_name
 }
@@ -18,7 +22,7 @@ resource "aws_lambda_function" "main" {
   ]
 
   function_name = "${var.service_name}-lambda-${var.stage_name}"
-  role = aws_iam_role.lambda.arn
+  role = data.aws_iam_role.lambda.arn
   timeout = 5
   image_uri = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.id}"
   package_type = "Image"

@@ -3,7 +3,7 @@ terraform {
     organization = "tangredon"
 
     workspaces {
-      name = "raiha-deployment"
+      prefix = "raiha-deployment-"
     }
   }
 
@@ -21,6 +21,11 @@ provider "aws" {
   secret_key = var.aws_secret
 }
 
-# module "lambda" {
-#   source = "../modules/lambda"
-# }
+module "lambda" {
+  source = "../modules/lambda"
+
+  repo_name = "raiha"
+  service_name = "raiha"
+  image_tag = var.image_tag
+  stage_name = var.stage_name
+}
