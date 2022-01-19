@@ -59,7 +59,7 @@ resource "aws_api_gateway_integration" "lambda" {
 
   integration_http_method = "POST"
   type = "AWS_PROXY"
-  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${local.account_id}:function:raiha-lambda-$${stageVariables.stage_name}/invocations"
+  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${local.account_id}:function:raiha-lambda-$${stageVariables.stage_name}:prod/invocations"
 }
 
 resource "aws_api_gateway_integration" "lambda_root" {
@@ -69,5 +69,5 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type = "AWS_PROXY"
-  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${local.account_id}:function:raiha-lambda-$${stageVariables.stage_name}/invocations"
+  uri = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${local.account_id}:function:raiha-lambda-$${stageVariables.stage_name}:prod/invocations"
 }
