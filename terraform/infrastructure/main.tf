@@ -30,4 +30,5 @@ module "gateway" {
   source = "../modules/gateway"
 
   service_name = "raiha"
+  aws_region = var.aws_region
 }

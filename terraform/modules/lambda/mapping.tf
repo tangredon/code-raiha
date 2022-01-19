@@ -2,59 +2,7 @@ data "aws_api_gateway_rest_api" "lambda" {
   name = "${var.service_name}-api"
 }
 
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = data.aws_api_gateway_rest_api.lambda.id
-  parent_id   = data.aws_api_gateway_rest_api.lambda.root_resource_id
-  path_part   = "{proxy+}"
-}
-
-resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = data.aws_api_gateway_rest_api.lambda.id
-  resource_id   = aws_api_gateway_resource.proxy.id
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_method" "proxy_root" {
-  rest_api_id   = data.aws_api_gateway_rest_api.lambda.id
-  resource_id   = data.aws_api_gateway_rest_api.lambda.root_resource_id
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-
-
-#data "aws_api_gateway_resource" "lambda" {
-#  rest_api_id = data.aws_api_gateway_rest_api.lambda.id
-#  path        = "/{proxy+}"
-#}
-
-resource "aws_api_gateway_integration" "lambda" {
-  rest_api_id = data.aws_api_gateway_rest_api.lambda.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = "ANY"
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_alias.lambda.invoke_arn
-}
-
-# resource "aws_api_gateway_integration" "lambda_root" {
-#   rest_api_id = data.aws_api_gateway_rest_api.lambda.id
-#   resource_id = aws_api_gateway_method.proxy_root.resource_id
-#   http_method = aws_api_gateway_method.proxy_root.http_method
-# 
-#   integration_http_method = "POST"
-#   type                    = "AWS_PROXY"
-#   uri                     = aws_lambda_alias.lambda.invoke_arn
-# }
-
 resource "aws_api_gateway_deployment" "lambda" {
-  depends_on = [
-    aws_api_gateway_integration.lambda,
-    # aws_api_gateway_integration.lambda_root,
-  ]
-
   rest_api_id = data.aws_api_gateway_rest_api.lambda.id
 
   lifecycle {
@@ -70,6 +18,10 @@ resource "aws_api_gateway_stage" "lambda" {
   deployment_id = aws_api_gateway_deployment.lambda.id
   rest_api_id   = data.aws_api_gateway_rest_api.lambda.id
   stage_name    = var.stage_name
+
+  variables = {
+    stage_name = var.stage_name
+  }
 }
 
 resource "aws_lambda_permission" "apigateway" {
