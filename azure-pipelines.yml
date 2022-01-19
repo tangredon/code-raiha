@@ -137,6 +137,8 @@ stages:
 
         - powershell: cd terraform/deployment && ./init.ps1 -EA SilentlyContinue
           displayName: Pre-requisites
+          env:
+            TERRAFORM_TOKEN: $(TERRAFORM_TOKEN)
 
         - powershell: cd terraform/deployment && terraform workspace select $(stage_name)
           displayName: Workspace
