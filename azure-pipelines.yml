@@ -135,7 +135,7 @@ stages:
         - powershell: echo $(stage_name)
           displayName: Print Stage Name
 
-        - powershell: cd terraform/deployment && ./init.ps1 -EA SilentlyContinue
+        - powershell: cd terraform/deployment && ./init.ps1
           displayName: Pre-requisites
           env:
             TERRAFORM_TOKEN: $(TERRAFORM_TOKEN)
