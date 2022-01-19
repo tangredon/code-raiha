@@ -1,2 +1,2 @@
-terraform init -backend=false
-terraform init
+terraform init -backend=false 
+terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
