@@ -1,3 +1,7 @@
+locals {
+  target_domain = (var.stage_name == "development" ? "alpha" : (var.stage_name == "staging" ? "staging" : (var.stage_name == "production" ? "serverless" : "UNKNOWN"))) 
+}
+
 data "aws_api_gateway_rest_api" "lambda" {
   name = "${var.service_name}-api"
 }
@@ -49,7 +53,7 @@ resource "aws_lambda_permission" "cloudwatch" {
 }
 
 data "aws_api_gateway_domain_name" "serverless" {
-  domain_name = "serverless.tangredon.com"
+  domain_name = "${local.target_domain}.tangredon.com"
 }
 
 resource "aws_api_gateway_base_path_mapping" "raiha" {
