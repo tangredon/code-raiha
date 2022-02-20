@@ -1,5 +1,8 @@
 locals {
-  target_domain = (var.stage_name == "development" ? "alpha" : (var.stage_name == "staging" ? "staging" : (var.stage_name == "production" ? "serverless" : "UNKNOWN"))) 
+  target_domain = ( var.stage_name == "development" ? "alpha" :
+                  ( var.stage_name == "staging"     ? "staging" : 
+                  ( var.stage_name == "production"  ? "serverless" : 
+                  "UNKNOWN"))) 
 }
 
 data "aws_api_gateway_rest_api" "lambda" {
