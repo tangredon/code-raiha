@@ -37,8 +37,7 @@ stages:
         - task: gitversion/setup@0
           displayName: Install GitVersion
           inputs:
-            versionSpec: '6.x'
-            includePrerelease: true
+            versionSpec: '5.x'
 
         - task: gitversion/execute@0
           displayName: Execute GitVersion
