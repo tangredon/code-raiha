@@ -16,7 +16,7 @@ public class ValuesController : ControllerBase
             throw new Exception("bad luck");
         }
 
-        return new[] { "value 11" };
+        return new[] { "value 15" };
     }
 
     // GET api/values/5
