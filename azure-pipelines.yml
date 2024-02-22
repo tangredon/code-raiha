@@ -59,7 +59,7 @@ stages:
         - powershell: cd terraform\infrastructure && terraform init -backend-config="token=$(TERRAFORM_TOKEN)"
           displayName: Terraform Init
 
-        - powershell: cd terraform\infrastructure && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -out "plan.terra"
+        - powershell: cd terraform\infrastructure && terraform plan -var $(TF_VAR_1) -var $(TF_VAR_2) -var='aws_access=$(AWS-ACCESS-KEY-ID)' -var='aws_secret=$(AWS-SECRET-ACCESS-KEY)' -var='aws_region=$($(AWS_REGION))' -out "plan.terra"
           displayName: Terraform Plan
       
         - powershell: cd terraform\infrastructure && terraform apply "plan.terra"
