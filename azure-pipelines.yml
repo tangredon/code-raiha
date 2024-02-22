@@ -156,6 +156,7 @@ stages:
             AWS_ACCESS_KEY_ID: $(AWS-ACCESS-KEY-ID)
             AWS_SECRET_ACCESS_KEY: $(AWS-SECRET-ACCESS-KEY)
             AWS_REGION: $(AWS_REGION)
+            AWS_DEFAULT_REGION: eu-central-1
       
         - powershell: cd terraform/deployment && terraform apply "plan.terra"
           displayName: Apply
