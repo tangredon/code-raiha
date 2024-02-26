@@ -1,6 +1,6 @@
 FROM public.ecr.aws/lambda/dotnet:8 AS base
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-bullseye-slim as build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
 COPY ["Raiha.csproj", "Raiha/"]
 RUN dotnet restore "Raiha/Raiha.csproj"
 
