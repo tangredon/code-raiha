@@ -87,8 +87,8 @@ stages:
           displayName: Use NET6.0
           inputs:
             packageType: 'sdk'
-            version: '6.0.x'
-            includePreviewVersions: true
+            version: '8.x'
+            includePreviewVersions: false
 
         - task: DotNetCoreCLI@2
           displayName: Build
